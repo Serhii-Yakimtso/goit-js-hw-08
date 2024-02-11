@@ -51,26 +51,37 @@ const images = [
 ];
 
 const gallery = document.querySelector(".gallery");
-// console.log(gallery);
 
 const galleryMarkup = images
-	.map(image => {
-		return `
-<li class="gallery-item">
-  <a class="gallery-link" href="${image.original}">
-    <img
-      class="gallery-image"
-      src="${image.preview}"
-      data-source="${image.original}"
-      alt="${image.description}"
-    />
-  </a>
-</li>`;
-	})
+	.map(
+		({ preview, original, description }) =>
+			`<li class="gallery-item">
+			<a class="gallery-link" href="${original}">
+      	   		<img
+           		class="gallery-image"
+           		src="${preview}"
+           		data-source="${original}"
+           		alt="${description}"
+         		 />
+        	</a>
+     	 </li>`,
+	)
 	.join("");
 
 gallery.insertAdjacentHTML("beforeend", galleryMarkup);
 
-const galleryLink = document.querySelectorAll(".gallery-link");
+function handleLinkClick(event) {
+	event.preventDefault();
+	if (event.target.nodeName !== "IMG") {
+		return;
+	}
+	// console.log(event.target.dataset.source);
 
-galleryLink.
+	const instance = basicLightbox.create(`
+    <img src="${event.target.dataset.source}" width="800" height="600">
+`);
+
+	instance.show();
+}
+
+gallery.addEventListener("click", handleLinkClick);
